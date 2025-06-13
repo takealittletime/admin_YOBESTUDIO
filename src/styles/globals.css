@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: rgb(0, 71, 255);
+}
+
+html,
+body {
+  overscroll-behavior-y: none;
+  background-color: white;
+  color: var(--primary-color);
+  font-family: var(--font-helvetica-world), sans-serif;
+}
+
+.custom-scrollbar {
+  /* 아래 커스텀 스크롤 바 적용 */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 1);
+}
+
+@layer utilities {
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+    background-color: #e0e0e0;
+  }
+
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.6),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+    transform: translateX(0%);
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}

@@ -5,34 +5,32 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "", // 주소
-        port: "",
-        pathname: "/**",
+        hostname: "oazyaakxmlehikwrydgb.supabase.co",
+        pathname: "/storage/v1/object/public/**",
       },
       {
         protocol: "http",
-        hostname: "",
-        port: "",
-        pathname: "/**",
+        hostname: "oazyaakxmlehikwrydgb.supabase.co",
+        pathname: "/storage/v1/render/image/sign/**",
       },
-      {
-        protocol: "https",
-        hostname: "",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "",
-        port: "",
-        pathname: "/**",
-      },
+      // {
+      //   protocol: "https",
+      //   hostname: "",
+      //   port: "",
+      //   pathname: "/**",
+      // },
+      // {
+      //   protocol: "https",
+      //   hostname: "",
+      //   port: "",
+      //   pathname: "/**",
+      // },
+      // {
+      //   protocol: "http",
+      //   hostname: "",
+      //   port: "",
+      //   pathname: "/**",
+      // },
     ],
     formats: ["image/avif", "image/webp"],
   },

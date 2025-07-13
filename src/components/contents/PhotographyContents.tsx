@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 
 import { supabase } from "@/lib/supabaseClient";
 
-export default function PhotographyContents() {
+export default function PhotographyContents({
+  onSelectionChange,
+}: {
+  onSelectionChange?: (folders: string[]) => void;
+}) {
   const [folderThumbs, setFolderThumbs] = useState<
     { folder: string; thumbUrl: string }[]
   >([]);
@@ -65,6 +69,16 @@ export default function PhotographyContents() {
 
     fetchThumbs();
   }, []);
+
+  // 선택 상태가 변경될 때마다 상위로 폴더명 배열 전달
+  useEffect(() => {
+    if (onSelectionChange) {
+      const selectedFolders = selectedThumbIndices
+        .map((idx) => folderThumbs[idx]?.folder)
+        .filter(Boolean);
+      onSelectionChange(selectedFolders);
+    }
+  }, [selectedThumbIndices, folderThumbs, onSelectionChange]);
 
   const onPrev = () => {
     setCurrentIndex(

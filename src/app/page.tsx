@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
+import PhotographyContents from "@/components/contents/PhotographyContents";
 import Header from "@/components/ui/header/header";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -13,6 +14,7 @@ export default function Home() {
   const [projectImageNames, setProjectImageNames] = useState<string[]>([]);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -108,6 +110,7 @@ export default function Home() {
     }
 
     alert("업로드가 완료 되었습니다.");
+    window.location.reload();
     // 업로드 후 상태 초기화
     setSelectedImage(null);
     setSelectedImageName("");
@@ -117,13 +120,59 @@ export default function Home() {
     setIsLoading(false);
   };
 
+  const getAllFilePaths = async (folder: string): Promise<string[]> => {
+    const allPaths: string[] = [];
+    const traverse = async (prefix: string) => {
+      const { data: files, error } = await supabase.storage
+        .from("ybst-photo")
+        .list(prefix);
+      if (error) return;
+      for (const f of files) {
+        if (f.name && f.metadata && f.metadata.size === 0) {
+          // 하위 폴더
+          await traverse((prefix ? prefix + "/" : "") + f.name);
+        } else {
+          allPaths.push((prefix ? prefix + "/" : "") + f.name);
+        }
+      }
+    };
+    await traverse(folder);
+    return allPaths;
+  };
+
+  const handleDeleteProjects = async () => {
+    if (selectedFolders.length === 0) {
+      alert("삭제할 프로젝트를 선택하세요.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      for (const folder of selectedFolders) {
+        const filePaths = await getAllFilePaths(folder);
+        if (filePaths.length > 0) {
+          const { error: removeError } = await supabase.storage
+            .from("ybst-photo")
+            .remove(filePaths);
+          if (removeError) throw removeError;
+        }
+      }
+      alert("삭제가 완료되었습니다.");
+      setSelectedFolders([]);
+      window.location.reload();
+    } catch (e) {
+      alert("삭제 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex h-full flex-col">
       <Header />
       <div className="flex h-full flex-col bg-black">
         {isLoading && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-            <div className="loader"></div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="loader z-20"></div>
           </div>
         )}
         {/* 프로젝트 추가 섹션 */}
@@ -243,16 +292,26 @@ export default function Home() {
 
         {/* 프로젝트 삭제 섹션 */}
         <section className="flex h-full flex-col">
-          <div className="flex flex-col bg-[#333] p-3 text-lg text-white">
+          <div className="flex flex-col  bg-[#333] p-3 text-lg text-white">
             프로젝트 삭제
           </div>
           <div className="flex h-full flex-col bg-[#f5f5f5] p-5 text-black">
+            <div className="flex flex-row justify-between">
+              <div className="p-2 text-left text-sm text-red-600">
+                * 삭제를 원하는 프로젝트를 선택하고, 우측 삭제 버튼을
+                클릭하세요.
+              </div>
+              <button
+                className="w-1/6 rounded-full bg-red-600 py-3 text-white hover:bg-red-700"
+                onClick={handleDeleteProjects}
+                type="button"
+              >
+                프로젝트 삭제하기
+              </button>
+            </div>
             <section className="m-2 flex h-full flex-col border border-[#e3e3e3] bg-white text-black">
-              <section className="flex size-full border-b border-b-[#e3e3e3] bg-white p-4 text-black">
-                기능 작성 중입니다,,
-              </section>
-              <section className="flex size-full border-b border-b-[#e3e3e3] bg-white p-4 text-black">
-                기능 작성 중입니다,,
+              <section className="flex size-full flex-col overflow-y-scroll border-b border-b-[#e3e3e3] bg-white p-4 text-black">
+                <PhotographyContents onSelectionChange={setSelectedFolders} />
               </section>
             </section>
           </div>

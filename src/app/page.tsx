@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
+import PhotographyContents from "@/components/contents/PhotographyContents";
 import Header from "@/components/ui/header/header";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -243,16 +244,28 @@ export default function Home() {
 
         {/* 프로젝트 삭제 섹션 */}
         <section className="flex h-full flex-col">
-          <div className="flex flex-col bg-[#333] p-3 text-lg text-white">
+          <div className="flex flex-col  bg-[#333] p-3 text-lg text-white">
             프로젝트 삭제
           </div>
           <div className="flex h-full flex-col bg-[#f5f5f5] p-5 text-black">
+            <div className="flex flex-row justify-between">
+              <div className="p-2 text-left text-sm text-red-600">
+                * 삭제를 원하는 프로젝트를 선택하고, 우측 삭제 버튼을
+                클릭하세요.
+              </div>
+              <button
+                className="w-1/6 rounded-full bg-red-600 py-3 text-white hover:bg-red-700"
+                onClick={() => {
+                  // console.log("✅ 삭제 버튼 클릭");
+                }}
+                type="button"
+              >
+                프로젝트 삭제하기
+              </button>
+            </div>
             <section className="m-2 flex h-full flex-col border border-[#e3e3e3] bg-white text-black">
-              <section className="flex size-full border-b border-b-[#e3e3e3] bg-white p-4 text-black">
-                기능 작성 중입니다,,
-              </section>
-              <section className="flex size-full border-b border-b-[#e3e3e3] bg-white p-4 text-black">
-                기능 작성 중입니다,,
+              <section className="flex size-full flex-col overflow-y-scroll border-b border-b-[#e3e3e3] bg-white p-4 text-black">
+                <PhotographyContents />
               </section>
             </section>
           </div>

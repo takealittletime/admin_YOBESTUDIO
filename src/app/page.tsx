@@ -68,7 +68,14 @@ export default function Home() {
     }
 
     // 2. 다음 폴더 명 설정
-    const newFolder = folders.length.toString();
+    // 2. 다음 폴더 명 설정 (숫자형 폴더 중 최댓값 + 1)
+    const numericFolderNames = folders
+      .map((f) => f.name)
+      .filter((name) => /^\d+$/.test(name))
+      .map(Number);
+    const maxFolderNumber =
+      numericFolderNames.length > 0 ? Math.max(...numericFolderNames) : 0;
+    const newFolder = (maxFolderNumber + 1).toString();
     // 3. 썸네일 업로드 (1.확장자)
     if (!selectedImageFile) {
       alert("썸네일 이미지를 선택하세요.");
